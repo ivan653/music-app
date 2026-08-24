@@ -6,7 +6,8 @@ import 'package:music_player/data_types/track.dart';
 
 class PlayerController extends ChangeNotifier {
   final _player = AudioPlayer();
-  Track? currentTrack;
+  List<Track> _queue = [];
+  int _currentIndex = -1;
 
   Stream<PlayerState> get playerStateStream => _player.playerStateStream;
   bool get isPlaying => _player.playing;
@@ -23,8 +24,32 @@ class PlayerController extends ChangeNotifier {
     });
   }
 
+  Track? get currentTrack => _currentIndex >= 0 && _currentIndex < _queue.length
+      ? _queue[_currentIndex]
+      : null;
+
+  void setQueue(List<Track> tracks, {int startIndex = 0}) {
+    _queue = tracks;
+    _currentIndex = startIndex;
+    //playTrack(_queue[_currentIndex]);
+  }
+
+  Future<void> playNext() async {
+    if (_currentIndex < _queue.length - 1) {
+      _currentIndex++;
+      await playTrack(_queue[_currentIndex]);
+    }
+  }
+
+  Future<void> playPrevious() async {
+    if (_currentIndex > 0) {
+      _currentIndex--;
+      await playTrack(_queue[_currentIndex]);
+    }
+  }
+
   Future<void> playTrack(Track track) async {
-    currentTrack = track;
+    _currentIndex = _queue.indexOf(track);
     await _player.setUrl(track.audioUrl);
     await _player.play();
     _isInitialized = true;

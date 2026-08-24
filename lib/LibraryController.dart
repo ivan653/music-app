@@ -14,6 +14,11 @@ class LibraryController extends ChangeNotifier {
 
   get http => null;
 
+  void addPlaylist(Playlist playlist) {
+    _playlists.add(playlist);
+    notifyListeners();
+  }
+
   /*Future<void> fetchSongs() async {
     _isLoading = true;
     notifyListeners();

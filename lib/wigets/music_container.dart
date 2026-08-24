@@ -31,7 +31,8 @@ class MusicContainer extends StatelessWidget {
                 Row(
                   // group the icon+text so they stay together on the left
                   children: [
-                    Icon(Icons.music_note, size: 48),
+                    //Icon(Icons.music_note, size: 48),
+                    Image.asset(track.logoUrl, height: 50),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

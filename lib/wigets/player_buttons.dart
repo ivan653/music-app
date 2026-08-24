@@ -14,7 +14,7 @@ class PlayerButtons extends StatelessWidget {
         IconButton(
           icon: const Icon(Icons.skip_previous),
           onPressed: () {
-            // Implement previous track functionality
+            controller.playPrevious();
           },
         ),
         IconButton(
@@ -27,7 +27,7 @@ class PlayerButtons extends StatelessWidget {
         IconButton(
           icon: const Icon(Icons.skip_next),
           onPressed: () {
-            // Implement next track functionality
+            controller.playNext();
           },
         ),
       ],

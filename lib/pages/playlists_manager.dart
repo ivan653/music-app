@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:music_player/LibraryController.dart';
 import 'package:music_player/data_types/playlist.dart';
 import 'package:music_player/data_types/track.dart';
+import 'package:music_player/pages/playlist.dart';
 import 'package:music_player/wigets/musicBox.dart';
 import 'package:music_player/wigets/music_container.dart';
 import 'package:music_player/wigets/player_buttons.dart';
@@ -14,6 +15,27 @@ class PlaylistsManagerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<LibraryController>();
+
+    List<Track> tracks = [
+      Track(
+        title: "title",
+        duration: 180,
+        audioUrl:
+            'https://github.com/rafaelreis-hotmart/Audio-Sample-files/raw/master/sample.mp3',
+      ),
+      Track(
+        title: "title 2",
+        duration: 180,
+        audioUrl:
+            'https://github.com/rafaelreis-hotmart/Audio-Sample-files/raw/master/sample.mp3',
+      ),
+      Track(
+        title: "title 3",
+        duration: 180,
+        audioUrl:
+            'https://github.com/rafaelreis-hotmart/Audio-Sample-files/raw/master/sample.mp3',
+      ),
+    ];
 
     Future createPlaylist() => showDialog(
       context: context,
@@ -41,8 +63,10 @@ class PlaylistsManagerPage extends StatelessWidget {
                   final newPlaylist = Playlist(
                     id: DateTime.now().toString(),
                     title: playlistTitle,
+                    tracks: tracks,
                   );
-                  context.read<LibraryController>().playlists.add(newPlaylist);
+                  //context.read<LibraryController>().playlists.add(newPlaylist);
+                  controller.addPlaylist(newPlaylist);
                   Navigator.of(context).pop();
                 }
               },
@@ -54,27 +78,46 @@ class PlaylistsManagerPage extends StatelessWidget {
     );
     //controller.playlists.
     return Scaffold(
-      appBar: AppBar(title: const Text('Playlist')),
+      appBar: AppBar(
+        title: const Text('Playlist'),
+        backgroundColor: Theme.of(context).secondaryHeaderColor,
+      ),
       body: Column(
         children: [
-          IconButton(
-            onPressed: () async {
-              createPlaylist();
-            },
-            icon: Icon(Icons.add),
+          Align(
+            alignment: Alignment.topRight,
+            child: Container(
+              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+              child: IconButton(
+                iconSize: 40,
+                onPressed: () async => createPlaylist(),
+                icon: const Icon(Icons.add),
+              ),
+            ),
           ),
 
-          ListView(
-            children: controller.playlists
-                .map(
-                  (playlist) => ListTile(
-                    title: Text(playlist.title),
-                    onTap: () {
-                      // Handle playlist selection
-                    },
-                  ),
-                )
-                .toList(),
+          Expanded(
+            child: ListView(
+              children: controller.playlists
+                  .map(
+                    (playlist) => ListTile(
+                      title: Text(playlist.title),
+                      onTap: () {
+                        context.read<PlayerController>().setQueue(
+                          playlist.tracks,
+                        );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                PlaylistPage(playlist: playlist),
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                  .toList(),
+            ),
           ),
         ],
       ),
